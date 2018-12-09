@@ -43,7 +43,7 @@ from .modules.modules import SentenceEncoder, BoWSentEncoder, \
     NullPhraseLayer
 from .modules.edge_probing import EdgeClassifierModule
 from .modules.seq2seq_decoder import Seq2SeqDecoder
-
+from .modules.onlstm.ON_LSTM import ONLSTMStack
 
 # Elmo stuff
 # Look in $ELMO_SRC_DIR (e.g. /usr/share/jsalt/elmo) or download from web
@@ -127,6 +127,16 @@ def build_model(args, vocab, pretrained_embs, tasks):
                                        cove_layer=cove_layer,
                                        sep_embs_for_skip=args.sep_embs_for_skip)
         log.info("Using Transformer architecture for shared encoder!")
+    elif args.sent_enc=='onlstm':
+        sent_encoder = ONLSTMStack(
+            [args.d_word] + [args.d_hid] * (args.n_layers_enc - 1) + [args.d_hid],
+            chunk_size=args.chunk_size,
+            dropconnect=0.0,
+            dropout=args.dropout,
+            embedder= embedder
+        )
+        d_sent=args.d_hid#this is output dim right?
+        log.info("Using onlstm sentence encoder!")     
     elif args.sent_enc == 'null':
         # Expose word representation layer (GloVe, ELMo, etc.) directly.
         assert_for_log(args.skip_embs, f"skip_embs must be set for "
@@ -621,6 +631,7 @@ class MultiTaskModel(nn.Module):
         out = {}
 
         # embed the sentence
+        #import pdb;pdb.set_trace()
         sent_embs, sent_mask = self.sent_encoder(batch['input1'], task)
         # pass to a task specific classifier
         classifier = self._get_classifier(task)
