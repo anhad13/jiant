@@ -118,8 +118,9 @@ class ONLSTMCell(nn.Module):
 
 
 class ONLSTMStack(nn.Module):
-    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None):
+    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None):
         super(ONLSTMStack, self).__init__()
+        self.layer_sizes=layer_sizes
         self.cells = nn.ModuleList([ONLSTMCell(layer_sizes[i],
                                                layer_sizes[i+1],
                                                chunk_size,
@@ -129,12 +130,20 @@ class ONLSTMStack(nn.Module):
         self.dropout = dropout
         self.sizes = layer_sizes
         self.embedder=embedder
+        self._phrase_layer=phrase_layer
+
+    def get_input_dim(self):
+        return self.layer_sizes[0]
+
+    def get_output_dim(self):
+        return self.layer_sizes[-1]
 
     def init_hidden(self, bsz):
         return [c.init_hidden(bsz) for c in self.cells]
 
     def forward(self, input, task=None):
-        input=self.embedder(input)
+        #import pdb;pdb.set_trace()
+        #input=self.embedder(input)
         batch_size=input.size()[1]
         hidden = self.init_hidden(batch_size)
         return self.forward_actual(input, hidden)

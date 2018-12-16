@@ -221,7 +221,7 @@ def _build_vocab(args, tasks, vocab_path: str):
 def build_tasks(args):
     '''Main logic for preparing tasks, doing so by
     1) creating / loading the tasks
-    2) building / loading the vocabulary
+    2) building / loading the voc abulary
     3) building / loading the word vectors
     4) indexing each task's data
     5) initializing lazy loaders (streaming iterators)

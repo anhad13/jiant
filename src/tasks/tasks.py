@@ -487,6 +487,15 @@ class SSTTask(SingleClassificationTask):
         log.info("\tFinished loading SST data.")
 
 
+@register_task('wsj', rel_path='Penn/')
+class WSJLanguageModelling(LanguageModelingTask):
+    """ Language modeling on a PTB dataset
+    See base class: LanguageModelingTask
+    """
+
+    def __init__(self, path, max_seq_len, name="wiki"):
+        super().__init__(path, max_seq_len, name)
+
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')
 @register_task('reddit_3.4G', rel_path='Reddit_3.4G/')
