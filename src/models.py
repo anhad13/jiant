@@ -131,7 +131,7 @@ def build_model(args, vocab, pretrained_embs, tasks):
         phrase_layer = ONLSTMStack(
             [args.d_word] + [args.d_hid] * (args.n_layers_enc - 1) + [args.d_hid],
             chunk_size=args.chunk_size,
-            dropconnect=0.0,
+            dropconnect=args.dropconnect,
             dropout=args.dropout,
             embedder= embedder,
             phrase_layer=None

@@ -168,7 +168,7 @@ class SamplingMultiTaskTrainer:
         self._task_infos = None
         self._metric_infos = None
 
-        self._log_interval = 10  # seconds
+        self._log_interval = 1000  # seconds
         if self._cuda_device >= 0:
             self._model = self._model.cuda(self._cuda_device)
 
