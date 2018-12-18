@@ -129,7 +129,7 @@ def build_model(args, vocab, pretrained_embs, tasks):
         log.info("Using Transformer architecture for shared encoder!")
     elif args.sent_enc=='onlstm':
         phrase_layer = ONLSTMStack(
-            [args.d_word] + [args.d_hid] * (args.n_layers_enc - 1) + [args.d_hid],
+            [args.d_word] + [args.d_hid] * (args.n_layers_enc - 1) + [args.d_word],
             chunk_size=args.chunk_size,
             dropconnect=args.dropconnect,
             dropout=args.dropout,
@@ -141,7 +141,7 @@ def build_model(args, vocab, pretrained_embs, tasks):
                                        dropout=args.dropout,
                                        sep_embs_for_skip=args.sep_embs_for_skip,
                                        cove_layer=cove_layer)
-        d_sent=args.d_hid#this is output dim right?
+        d_sent=args.d_word#this is output dim right?
         log.info("Using onlstm sentence encoder!") 
         #import pdb;pdb.set_trace()    
     elif args.sent_enc == 'null':
@@ -376,7 +376,8 @@ def build_module(task, model, d_sent, d_emb, vocab, embedder, args):
                                             task_params)
         setattr(model, '%s_mdl' % task.name, module)
     elif isinstance(task, LanguageModelingTask):
-        d_sent = args.d_hid + (args.skip_embs * d_emb)
+        #d_sent = args.d_hid + (args.skip_embs * d_emb)
+        #import pdb;pdb.set_trace()
         hid2voc = build_lm(task, d_sent, args)
         setattr(model, '%s_mdl' % task.name, hid2voc)
         setattr(model, '%s_hid2voc' % task.    name, hid2voc)
