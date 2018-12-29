@@ -238,6 +238,10 @@ def build_embeddings(args, vocab, tasks, pretrained_embs=None):
             d_word = word_embs.size()[1]
             log.info("\tUsing pre-trained word embeddings: %s",
                      str(word_embs.size()))
+        elif args.word_embs=="py_embed":
+            log.info("\tUsing torch.nn embedder!")
+            word_embs= nn.Embedding(n_token_vocab, d_word)
+            d_word=args.d_word
         else:
             log.info("\tLearning word embeddings from scratch!")
             word_embs = None
