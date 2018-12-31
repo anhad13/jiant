@@ -240,13 +240,12 @@ def build_embeddings(args, vocab, tasks, pretrained_embs=None):
                      str(word_embs.size()))
         elif args.word_embs=="py_embed":
             log.info("\tUsing torch.nn embedder!")
-            word_embs= nn.Embedding(n_token_vocab, d_word)
             d_word=args.d_word
+            word_embs= nn.Embedding(n_token_vocab, d_word).weight
         else:
             log.info("\tLearning word embeddings from scratch!")
             word_embs = None
             d_word = args.d_word
-
         embeddings = Embedding(num_embeddings=n_token_vocab, embedding_dim=d_word,
                                weight=word_embs, trainable=False,
                                padding_index=vocab.get_token_index('@@PADDING@@'))
@@ -924,7 +923,6 @@ class MultiTaskModel(nn.Module):
             bwd = torch.cat([bwd, out_embs], dim=2)
         # Forward and backward logits and targs
         hid2voc = getattr(self, "%s_hid2voc" % task.name)
-        import pdb;pdb.set_trace()
         logits_fwd = hid2voc(fwd).view(b_size * seq_len, -1)
         logits_bwd = hid2voc(bwd).view(b_size * seq_len, -1)
         logits = torch.cat([logits_fwd, logits_bwd], dim=0)
@@ -935,7 +933,6 @@ class MultiTaskModel(nn.Module):
         assert logits.size(0) == targs.size(0), "Number of logits and targets differ!"
         out['loss'] = F.cross_entropy(logits, targs, ignore_index=pad_idx)
         task.scorer1(out['loss'].item())
-        import pdb;pdb.set_trace()
         if predict:
             pass
         return out
