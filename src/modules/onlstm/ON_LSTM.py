@@ -154,7 +154,7 @@ class ONLSTMCell(nn.Module):
 
 
 class ONLSTMStack(nn.Module):
-    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.5, dropoutw=0.1, dropouti=0.5, dropouth=0.3):
+    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.5, dropoutw=0.1, dropouth=0.3):
         super(ONLSTMStack, self).__init__()
         self.layer_sizes=layer_sizes
         self.cells = nn.ModuleList([ONLSTMCell(layer_sizes[i],
