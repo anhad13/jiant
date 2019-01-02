@@ -154,7 +154,7 @@ class ONLSTMCell(nn.Module):
 
 
 class ONLSTMStack(nn.Module):
-    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.5):
+    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.5, dropoutw=0.1, dropouti=0.5, dropouth=0.3):
         super(ONLSTMStack, self).__init__()
         self.layer_sizes=layer_sizes
         self.cells = nn.ModuleList([ONLSTMCell(layer_sizes[i],
@@ -165,9 +165,11 @@ class ONLSTMStack(nn.Module):
         self.lockdrop = LockedDropout()
         self.dropout = dropout
         self.dropouti=dropouti
+        self.dropouth=dropouth
         self.sizes = layer_sizes
         self.embedder=embedder
         self._phrase_layer=phrase_layer
+        self.dropoutw=dropoutw
 
     def get_input_dim(self):
         return self.layer_sizes[0]
@@ -187,7 +189,7 @@ class ONLSTMStack(nn.Module):
 
     def forward_actual(self, input, hidden):
         #import pdb;pdb.set_trace()
-        input=embedded_dropout(self.embedder.token_embedder_words, input,0.5)
+        input=embedded_dropout(self.embedder.token_embedder_words, input,dropout=self.dropoutw)
         input = self.lockdrop(input, self.dropouti)
         length, batch_size, _ = input.size()
 
@@ -222,7 +224,7 @@ class ONLSTMStack(nn.Module):
             dist_layer_cin = torch.stack(dist_cin)
             raw_outputs.append(prev_layer)
             if l < len(self.cells) - 1:
-                prev_layer = self.lockdrop(prev_layer, self.dropout)
+                prev_layer = self.lockdrop(prev_layer, self.dropouth)
             outputs.append(prev_layer)
             distances_forget.append(dist_layer_cforget)
             distances_in.append(dist_layer_cin)

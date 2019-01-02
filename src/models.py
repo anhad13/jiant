@@ -132,7 +132,9 @@ def build_model(args, vocab, pretrained_embs, tasks):
             [args.d_word] + [args.d_hid] * (args.n_layers_enc - 1) + [args.d_word],
             chunk_size=args.chunk_size,
             dropconnect=args.dropconnect,
+            dropouti=args.dropouti,
             dropout=args.dropout,
+            dropouth=args.dropouth,
             embedder= embedder,
             phrase_layer=None
         )
