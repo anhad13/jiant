@@ -168,7 +168,7 @@ class SentenceEncoder(Model):
         sent_lstm_mask = sent_mask if self._mask_lstms else None
         if sent_embs is not None:
             if isinstance(self._phrase_layer, ONLSTMStack):
-                sent_enc, _ = self._phrase_layer(sent_embs, sent_lstm_mask)
+                sent_enc, _ = self._phrase_layer(sent["words"], sent_lstm_mask)
             else:
                 sent_enc = self._phrase_layer(sent_embs, sent_lstm_mask)
         else:

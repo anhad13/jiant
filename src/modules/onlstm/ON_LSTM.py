@@ -31,7 +31,6 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
   # if padding_idx is None:
   #     padding_idx = -1
   padding_idx=-1
-  import pdb;pdb.set_trace()
   X = torch.nn.functional.embedding(words, masked_embed_weight,
     padding_idx, embed.max_norm, embed.norm_type,
     embed.scale_grad_by_freq, embed.sparse
@@ -155,7 +154,7 @@ class ONLSTMCell(nn.Module):
 
 
 class ONLSTMStack(nn.Module):
-    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.3):
+    def __init__(self, layer_sizes, chunk_size, dropout=0., dropconnect=0., embedder=None, phrase_layer=None, dropouti=0.5):
         super(ONLSTMStack, self).__init__()
         self.layer_sizes=layer_sizes
         self.cells = nn.ModuleList([ONLSTMCell(layer_sizes[i],
@@ -188,7 +187,7 @@ class ONLSTMStack(nn.Module):
 
     def forward_actual(self, input, hidden):
         #import pdb;pdb.set_trace()
-        #embedded_dropout(self.embedder.token_embedder_words, input,0.5)
+        input=embedded_dropout(self.embedder.token_embedder_words, input,0.5)
         input = self.lockdrop(input, self.dropouti)
         length, batch_size, _ = input.size()
 

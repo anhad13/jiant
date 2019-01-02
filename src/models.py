@@ -952,7 +952,6 @@ class MultiTaskModel(nn.Module):
         """
         out = {}
         sent_encoder = self.sent_encoder
-        #import pdb;pdb.set_trace()
         #assert_for_log(isinstance(sent_encoder._phrase_layer, BiLMEncoder),
         #               "Not using LM for language modeling task!")
         assert_for_log('targs' in batch and 'words' in batch['targs'],
