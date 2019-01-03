@@ -144,6 +144,7 @@ class ONLSTMCell(nn.Module):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
+        import pdb;pdb.set_trace()
         return (weight.new(bsz, self.hidden_size).zero_(),
                 weight.new(bsz, self.n_chunk, self.chunk_size).zero_())
 
@@ -168,7 +169,7 @@ class ONLSTMStack(nn.Module):
         self.dropouth=dropouth
         self.sizes = layer_sizes
         self.embedder=embedder
-        self.hidden=self.init_hidden(batch_size)
+        #self.hidden=self.init_hidden(batch_size)
         self._phrase_layer=phrase_layer
 
         self.dropoutw=dropoutw
@@ -185,8 +186,8 @@ class ONLSTMStack(nn.Module):
     def forward(self, input, task=None):
         #input= torch.transpose(input, 0, 1)
         batch_size=input.size()[1]
-        hidden=self.hidden
-        #hidden = self.init_hidden(batch_size)
+        #hidden=self.hidden
+        hidden = self.init_hidden(batch_size)
         return self.forward_actual(input, hidden)
 
     def forward_actual(self, input, hidden):
