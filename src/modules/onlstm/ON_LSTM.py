@@ -182,9 +182,7 @@ class ONLSTMStack(nn.Module):
         return [c.init_hidden(bsz) for c in self.cells]
 
     def forward(self, input, task=None):
-        #import pdb;pdb.set_trace()
-        #input=self.embedder(input)
-        batch_size=input.size()[1]
+        batch_size=input.size()[0]
         hidden = self.init_hidden(batch_size)
         return self.forward_actual(input, hidden)
 
