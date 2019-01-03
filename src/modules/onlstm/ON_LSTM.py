@@ -113,7 +113,6 @@ class ONLSTMCell(nn.Module):
 
         if transformed_input is None:
             transformed_input = self.ih(input)
-
         gates = transformed_input + self.hh(hx)
         cingate, cforgetgate = gates[:, :self.n_chunk*2].chunk(2, 1)
         outgate, cell, ingate, forgetgate = gates[:,self.n_chunk*2:].view(-1, self.n_chunk*4, self.chunk_size).chunk(4,1)
@@ -182,7 +181,8 @@ class ONLSTMStack(nn.Module):
         return [c.init_hidden(bsz) for c in self.cells]
 
     def forward(self, input, task=None):
-        batch_size=input.size()[0]
+        input= torch.transpose(input, 0, 1)
+        batch_size=input.size()[1]
         hidden = self.init_hidden(batch_size)
         return self.forward_actual(input, hidden)
 
@@ -190,7 +190,6 @@ class ONLSTMStack(nn.Module):
         input=embedded_dropout(self.embedder.token_embedder_words, input, dropout=self.dropoutw if self.training else 0)
         input = self.lockdrop2(input, self.dropouti)
         length, batch_size, _ = input.size()
-
         if self.training:
             for c in self.cells:
                 c.sample_masks()
@@ -206,7 +205,6 @@ class ONLSTMStack(nn.Module):
             curr_layer = [None] * length
             dist = [None] * length
             t_input = self.cells[l].ih(prev_layer)
-
             for t in range(length):
                 hidden, cell, d = self.cells[l](
                     None, prev_state[l],
