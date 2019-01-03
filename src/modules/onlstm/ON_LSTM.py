@@ -181,7 +181,7 @@ class ONLSTMStack(nn.Module):
         return [c.init_hidden(bsz) for c in self.cells]
 
     def forward(self, input, task=None):
-        input= torch.transpose(input, 0, 1)
+        #input= torch.transpose(input, 0, 1)
         batch_size=input.size()[1]
         hidden = self.init_hidden(batch_size)
         return self.forward_actual(input, hidden)
