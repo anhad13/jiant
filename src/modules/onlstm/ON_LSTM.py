@@ -190,7 +190,7 @@ class ONLSTMStack(nn.Module):
 
     def forward_actual(self, input, hidden):
         input=embedded_dropout(self.embedder.token_embedder_words, input, dropout=self.dropoutw if self.training else 0)
-        input = self.lockdrop(input, self.dropouti)
+        input = self.lockdrop2(input, self.dropouti)
         length, batch_size, _ = input.size()
 
         if self.training:
