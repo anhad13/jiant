@@ -136,7 +136,8 @@ def build_model(args, vocab, pretrained_embs, tasks):
             dropout=args.dropout,
             dropouth=args.dropouth,
             embedder= embedder,
-            phrase_layer=None
+            phrase_layer=None,
+            batch_size=args.batch_size
         )
         sent_encoder = SentenceEncoder(vocab, embedder, args.n_layers_highway,
                                        phrase_layer, skip_embs=args.skip_embs,
