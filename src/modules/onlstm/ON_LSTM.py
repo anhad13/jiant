@@ -144,7 +144,6 @@ class ONLSTMCell(nn.Module):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        import pdb;pdb.set_trace()
         return (weight.new(bsz, self.hidden_size).zero_(),
                 weight.new(bsz, self.n_chunk, self.chunk_size).zero_())
 
