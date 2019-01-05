@@ -496,16 +496,16 @@ class WSJLanguageModelling(LanguageModelingTask):
     def __init__(self, path, max_seq_len, name="wiki"):
         super().__init__(path, max_seq_len, name)
 
-    # def load_data(self, path):
-    #     """Loading data file and tokenizing the text
-    #     Args:
-    #         path: (str) data file path
-    #     """
-    #     SOS_TOK, EOS_TOK = "<SOS>", "<EOS>"
-    #     with open(path, 'r') as f:
-    #         for line in f:
-    #             words = [SOS_TOK]+line.strip().split() + [EOS_TOK]
-    #             yield words
+    def load_data(self, path):
+        """Loading data file and tokenizing the text
+        Args:
+            path: (str) data file path
+        """
+        SOS_TOK, EOS_TOK = "<SOS>", "<EOS>"
+        with open(path, 'r') as f:
+            for line in f:
+                words = [SOS_TOK]+line.strip().split() + [EOS_TOK]
+                yield words
 
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')
