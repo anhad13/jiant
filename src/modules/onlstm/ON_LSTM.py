@@ -168,6 +168,8 @@ class ONLSTMStack(nn.Module):
         self.dropouth=dropouth
         self.sizes = layer_sizes
         self.embedder=embedder
+        dim=self.embedder.token_embedder_words.weight.shape
+        self.emb=nn.Embedding(dim[0], dim[1])
         #self.hidden=self.init_hidden(batch_size)
         self._phrase_layer=phrase_layer
 
@@ -190,7 +192,7 @@ class ONLSTMStack(nn.Module):
         return self.forward_actual(input, hidden)
 
     def forward_actual(self, input, hidden):
-        input=embedded_dropout(self.embedder.token_embedder_words, input, dropout=self.dropoutw if self.training else 0)
+        input=embedded_dropout(self.emb, input, dropout=self.dropoutw if self.training else 0)
         input = self.lockdrop2(input, self.dropouti)
         length, batch_size, _ = input.size()
         if self.training:

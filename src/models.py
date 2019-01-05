@@ -196,7 +196,7 @@ def build_model(args, vocab, pretrained_embs, tasks):
         build_module(task, model, d_sent, d_emb, vocab, embedder, args)
     tying=True
     if tasks[0].name=="wsj" and args.sent_enc=='onlstm' and tying:#enable tying
-        model.sent_encoder._phrase_layer.embedder.weight=model.wsj_hid2voc.weight
+        model.sent_encoder._phrase_layer.emb.weight=model.wsj_hid2voc.weight
     model = model.cuda() if args.cuda >= 0 else model
     log.info(model)
     param_count = 0
