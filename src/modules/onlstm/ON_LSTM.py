@@ -27,10 +27,10 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
   if scale:
     masked_embed_weight = scale.expand_as(masked_embed_weight) * masked_embed_weight
 
-  # padding_idx = embed.padding_idx
-  # if padding_idx is None:
-  #     padding_idx = -1
-  padding_idx=-1
+  padding_idx = embed.padding_idx
+  if padding_idx is None:
+    padding_idx = -1
+  #padding_idx=-1
   X = torch.nn.functional.embedding(words, masked_embed_weight,
     padding_idx, embed.max_norm, embed.norm_type,
     embed.scale_grad_by_freq, embed.sparse
@@ -161,8 +161,8 @@ class ONLSTMStack(nn.Module):
                                                chunk_size,
                                                dropconnect=dropconnect)
                                     for i in range(len(layer_sizes) - 1)])
-        self.lockdrop1 = LockedDropout()
-        self.lockdrop2= LockedDropout()
+        self.lockdrop = LockedDropout()
+        #self.lockdrop2= LockedDropout()
         self.dropout = dropout
         self.dropouti=dropouti
         self.dropouth=dropouth
@@ -193,7 +193,7 @@ class ONLSTMStack(nn.Module):
 
     def forward_actual(self, input, hidden):
         input=embedded_dropout(self.emb, input, dropout=self.dropoutw if self.training else 0)
-        input = self.lockdrop2(input, self.dropouti)
+        input = self.lockdrop(input, self.dropouti)
         length, batch_size, _ = input.size()
         if self.training:
             for c in self.cells:
@@ -225,12 +225,12 @@ class ONLSTMStack(nn.Module):
             dist_layer_cin = torch.stack(dist_cin)
             raw_outputs.append(prev_layer)
             if l < len(self.cells) - 1:
-                prev_layer = self.lockdrop1(prev_layer, self.dropouth)
+                prev_layer = self.lockdrop(prev_layer, self.dropouth)
             outputs.append(prev_layer)
             distances_forget.append(dist_layer_cforget)
             distances_in.append(dist_layer_cin)
         output = prev_layer
-        output=self.lockdrop2(output, self.dropout)
+        output=self.lockdrop(output, self.dropout)
         return output, torch.ones(output.shape)
         #import pdb;pdb.set_trace()
         #return output, prev_state, raw_outputs, outputs, (torch.stack(distances_forget), torch.stack(distances_in))
