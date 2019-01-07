@@ -385,8 +385,7 @@ def build_module(task, model, d_sent, d_emb, vocab, embedder, args):
                                             task_params)
         setattr(model, '%s_mdl' % task.name, module)
     elif isinstance(task, LanguageModelingTask):
-        #d_sent = args.d_hid + (args.skip_embs * d_emb)
-        #import pdb;pdb.set_trace()
+        d_sent = args.d_hid + (args.skip_embs * d_emb)
         hid2voc = build_lm(task, d_sent, args)
         setattr(model, '%s_mdl' % task.name, hid2voc)
         setattr(model, '%s_hid2voc' % task.    name, hid2voc)
