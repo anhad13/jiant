@@ -372,6 +372,7 @@ class LanguageModelingTask(SequenceGenerationTask):
                 toks = row.strip()
                 if not toks:
                     continue
+                import pdb;pdb.set_trace()
                 yield process_sentence(toks, self.max_seq_len)
 
     def process_split(self, split, indexers) -> Iterable[Type[Instance]]:
@@ -501,12 +502,27 @@ class WSJLanguageModelling(LanguageModelingTask):
         Args:
             path: (str) data file path
         """
-        max_seq=self.max_seq_len-2
-        SOS_TOK, EOS_TOK = "<SOS>", "<EOS>"
-        with open(path, 'r') as f:
-            for line in f:
-                words = [SOS_TOK]+line.strip().split()[:max_seq] + [EOS_TOK]
-                yield words
+        nonatomics_toks=['@@UNKNOWN@@', '<unk>']
+        with open(path) as txt_fh:
+            for row in txt_fh:
+                toks = row.strip()
+                if not toks:
+                    continue
+                toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
+                yield process_sentence(toks, self.max_seq_len)
+
+
+    # def load_data(self, path):
+    #     """Loading data file and tokenizing the text
+    #     Args:
+    #         path: (str) data file path
+    #     """
+    #     max_seq=self.max_seq_len-2
+    #     SOS_TOK, EOS_TOK = "<SOS>", "<EOS>"
+    #     with open(path, 'r') as f:
+    #         for line in f:
+    #             words = [SOS_TOK]+line.strip().split()[:max_seq] + [EOS_TOK]
+    #             yield words
 
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')
