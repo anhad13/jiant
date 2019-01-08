@@ -509,7 +509,13 @@ class WSJLanguageModelling(LanguageModelingTask):
                     continue
                 toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
                 yield toks
-
+    def get_metrics(self, reset=False):
+        """Get metrics specific to the task
+        Args:
+            reset: (boolean) reset any accumulators or internal state
+        """
+        nll = self.scorer1.get_metric(reset)
+        return {'perplexity': math.pow(2, nll)}
 
     # def load_data(self, path):
     #     """Loading data file and tokenizing the text
