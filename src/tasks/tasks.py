@@ -372,7 +372,6 @@ class LanguageModelingTask(SequenceGenerationTask):
                 toks = row.strip()
                 if not toks:
                     continue
-                import pdb;pdb.set_trace()
                 yield process_sentence(toks, self.max_seq_len)
 
     def process_split(self, split, indexers) -> Iterable[Type[Instance]]:
@@ -509,7 +508,7 @@ class WSJLanguageModelling(LanguageModelingTask):
                 if not toks:
                     continue
                 toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
-                yield process_sentence(toks, self.max_seq_len)
+                yield toks
 
 
     # def load_data(self, path):
