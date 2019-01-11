@@ -109,7 +109,7 @@ def build_trainer(params, model, run_dir, metric_should_decrease=True):
 class SamplingMultiTaskTrainer:
     def __init__(self, model, patience=2, val_interval=100, max_vals=50,
                  serialization_dir=None, cuda_device=-1,
-                 grad_norm=None, grad_clipping=None, lr_decay=None, min_lr=None,
+                 grad_norm=0.25, grad_clipping=None, lr_decay=None, min_lr=None,
                  keep_all_checkpoints=False, val_data_limit=5000,
                  dec_val_scale=100, training_data_fraction=1.0):
         """
@@ -968,7 +968,7 @@ class SamplingMultiTaskTrainer:
         max_vals = params.pop("max_vals", 50)
         cuda_device = params.pop("cuda_device", -1)
         grad_norm = params.pop("grad_norm", None)
-        grad_clipping = params.pop("grad_clipping", 0.25)
+        grad_clipping = params.pop("grad_clipping", None)
         lr_decay = params.pop("lr_decay", None)
         min_lr = params.pop("min_lr", None)
         keep_all_checkpoints = params.pop("keep_all_checkpoints", False)
