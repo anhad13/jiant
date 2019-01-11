@@ -496,38 +496,19 @@ class WSJLanguageModelling(LanguageModelingTask):
     def __init__(self, path, max_seq_len, name="wiki"):
         super().__init__(path, max_seq_len, name)
 
-    # def load_data(self, path):
-    #     """Loading data file and tokenizing the text
-    #     Args:
-    #         path: (str) data file path
-    #     """
-    #     nonatomics_toks=['@@UNKNOWN@@', '<unk>']
-    #     with open(path) as txt_fh:
-    #         for row in txt_fh:
-    #             toks = row.strip()
-    #             if not toks:
-    #                 continue
-    #             toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
-    #             yield toks
-    def get_metrics(self, reset=False):
-        """Get metrics specific to the task
-        Args:
-            reset: (boolean) reset any accumulators or internal state
-        """
-        nll = self.scorer1.get_metric(reset)
-        return {'perplexity': math.pow(2, nll)}
-
     def load_data(self, path):
         """Loading data file and tokenizing the text
         Args:
             path: (str) data file path
         """
-        max_seq=self.max_seq_len-2
-        SOS_TOK, EOS_TOK = "<SOS>", "<EOS>"
-        with open(path, 'r') as f:
-            for line in f:
-                words = [SOS_TOK]+line.strip().split()[:max_seq] + [EOS_TOK]
-                yield words
+        nonatomics_toks=['@@UNKNOWN@@', '<unk>']
+        with open(path) as txt_fh:
+            for row in txt_fh:
+                toks = row.strip()
+                if not toks:
+                    continue
+                toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
+                yield toks
 
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')

@@ -968,7 +968,7 @@ class SamplingMultiTaskTrainer:
         max_vals = params.pop("max_vals", 50)
         cuda_device = params.pop("cuda_device", -1)
         grad_norm = params.pop("grad_norm", None)
-        grad_clipping = params.pop("grad_clipping", None)
+        grad_clipping = params.pop("grad_clipping", 0.25)
         lr_decay = params.pop("lr_decay", None)
         min_lr = params.pop("min_lr", None)
         keep_all_checkpoints = params.pop("keep_all_checkpoints", False)
