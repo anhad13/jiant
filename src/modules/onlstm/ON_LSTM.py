@@ -192,6 +192,7 @@ class ONLSTMStack(nn.Module):
         return self.forward_actual(input, hidden)
 
     def forward_actual(self, input, hidden):
+        abs_inp=input
         input=embedded_dropout(self.emb, input, dropout=self.dropoutw if self.training else 0)
         input = self.lockdrop(input, self.dropouti)
         length, batch_size, _ = input.size()
@@ -231,7 +232,7 @@ class ONLSTMStack(nn.Module):
             distances_in.append(dist_layer_cin)
         output = prev_layer
         output=self.lockdrop(output, self.dropout)
-        return output, torch.ones(output.shape)
+        return output, abs_inp.unsqueeze(2)
         #import pdb;pdb.set_trace()
         #return output, prev_state, raw_outputs, outputs, (torch.stack(distances_forget), torch.stack(distances_in))
 
