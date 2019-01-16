@@ -109,7 +109,7 @@ def build_trainer(params, model, run_dir, metric_should_decrease=True):
 class SamplingMultiTaskTrainer:
     def __init__(self, model, patience=2, val_interval=100, max_vals=50,
                  serialization_dir=None, cuda_device=-1,
-                 grad_norm=None, grad_clipping=None, lr_decay=None, min_lr=None,
+                 grad_norm=0.25, grad_clipping=None, lr_decay=None, min_lr=None,
                  keep_all_checkpoints=False, val_data_limit=5000,
                  dec_val_scale=100, training_data_fraction=1.0):
         """
