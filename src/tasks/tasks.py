@@ -497,20 +497,32 @@ class WSJLanguageModelling(LanguageModelingTask):
         super().__init__(path, max_seq_len, name)
 
     def load_data(self, path):
-        """Loading data file and tokenizing the text
-        Args:
-            path: (str) data file path
-        """
-        nonatomics_toks=['@@UNKNOWN@@', '<unk>']
+        seq_len=self.max_seq_len
+        tokens=[]
         with open(path) as txt_fh:
             for row in txt_fh:
-                toks = row.strip()
+                toks=row.strip()
                 if not toks:
                     continue
-                toks_v=toks.split()
-                toks=["<SOS>"]+toks_v[:self.max_seq_len-2]+["<EOS>"]
-                #toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
-                yield toks
+                toks=toks.split()+["<EOS>"]
+                tokens+=toks
+            for i in range(0, len(tokens), seq_len):
+                yield tokens[i:i+seq_len]
+    # def load_data(self, path):
+    #     """Loading data file and tokenizing the text
+    #     Args:
+    #         path: (str) data file path
+    #     """
+    #     nonatomics_toks=['@@UNKNOWN@@', '<unk>']
+    #     with open(path) as txt_fh:
+    #         for row in txt_fh:
+    #             toks = row.strip()
+    #             if not toks:
+    #                 continue
+    #             toks_v=toks.split()
+    #             toks=["<SOS>"]+toks_v[:self.max_seq_len-2]+["<EOS>"]
+    #             #toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
+    #             yield toks
 
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')
