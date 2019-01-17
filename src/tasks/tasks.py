@@ -507,7 +507,8 @@ class WSJLanguageModelling(LanguageModelingTask):
                 toks = row.strip()
                 if not toks:
                     continue
-                toks=toks.split()
+                toks_v=toks.split()
+                toks=["<SOS>"]+toks_v[:self.max_seq_len-2]+["<EOS>"]
                 #toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
                 yield toks
 
