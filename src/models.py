@@ -918,6 +918,7 @@ class MultiTaskModel(nn.Module):
         n_pad = batch['targs']['words'].eq(pad_idx).sum().item()
         out['n_exs'] = (b_size * seq_len - n_pad) * 2
         sent, mask = sent_encoder(batch['input'], task)
+        import pdb;pdb.set_trace()
         sent = sent.masked_fill(1 - mask.byte(), 0)  # avoid NaNs 
         # Split encoder outputs by direction
         split = int(self.sent_encoder._phrase_layer.get_output_dim() / 2)
@@ -966,7 +967,7 @@ class MultiTaskModel(nn.Module):
         n_pad = batch['targs']['words'].eq(pad_idx).sum().item()
         out['n_exs'] = (b_size * seq_len - n_pad) * 2
         sent, mask = sent_encoder(batch['input'], task)
-        #sent = sent.masked_fill(1 - mask.byte(), 0)  # avoid NaNs 
+        sent = sent.masked_fill(1 - mask.byte(), 0)  # avoid NaNs 
         # Split encoder outputs by direction
         # split = int(self.sent_encoder._phrase_layer.get_output_dim() / 2)
         # fwd, bwd = sent[:, :, :split], sent[:, :, split:split * 2]
@@ -976,13 +977,12 @@ class MultiTaskModel(nn.Module):
         #     bwd = torch.cat([bwd, out_embs], dim=2)
         # # Forward and backward logits and targs
         hid2voc = getattr(self, "%s_hid2voc" % task.name)
-        mask=mask.view(-1).byte()
         logits = hid2voc(sent).view(b_size * seq_len, -1)
         out['logits'] = logits
         trg_fwd = batch['targs']['words'].view(-1)
         targs = trg_fwd
         assert logits.size(0) == targs.size(0), "Number of logits and targets differ!"
-        out['loss'] = F.cross_entropy(logits[mask], targs[mask], ignore_index=pad_idx)
+        out['loss'] = F.cross_entropy(logits, targs, ignore_index=pad_idx)
         task.scorer1(out['loss'].item())
         if predict:
             pass

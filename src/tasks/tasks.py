@@ -507,7 +507,8 @@ class WSJLanguageModelling(LanguageModelingTask):
                 toks = row.strip()
                 if not toks:
                     continue
-                toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
+                toks=toks.split()
+                #toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
                 yield toks
 
 @register_task('reddit', rel_path='Reddit_2008/')
