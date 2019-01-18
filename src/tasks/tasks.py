@@ -507,10 +507,26 @@ class WSJLanguageModelling(LanguageModelingTask):
                     continue
                 toks=toks.split()+["<EOS>"]
                 tokens+=toks
-            for i in range(0, len(tokens), seq_len):
-                yield tokens[i:i+seq_len]
+            num_sent=int(math.ceil(len(tokens)/seq_len))
+            for i in range(num_sent):
+                yield tokens[i*seq_len:i*seq_len+seq_len]
 
 
+    def count_examples(self):
+        """Computes number of samples
+        Assuming every line is one example.
+        """
+        example_counts = {}
+        for split, split_path in self.files_by_split.items():
+            #example_counts[split] = 
+            arr=[line.strip().split()+["<EOS>"] for line in open(split_path)]
+            allf=0
+            for x in arr:
+                allf+=len(x)
+            example_counts[split]=int(math.ceil(allf/self.max_seq_len))
+        self.example_counts = example_counts
+
+    
     def process_split(self, split, indexers) -> Iterable[Type[Instance]]:
         """Process a language modeling split by indexing and creating fields.
         Args:
