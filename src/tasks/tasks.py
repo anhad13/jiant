@@ -509,7 +509,7 @@ class WSJLanguageModelling(LanguageModelingTask):
                 tokens+=toks
             num_sent=int(math.ceil(len(tokens)/seq_len))
             for i in range(num_sent):
-                yield tokens[i*seq_len:i*seq_len+seq_len]
+                yield tokens[i*seq_len:i*seq_len+seq_len+1]
 
 
     def count_examples(self):
@@ -539,8 +539,8 @@ class WSJLanguageModelling(LanguageModelingTask):
             to avoid issues with needing to strip extra tokens
             in the input for each direction '''
             d = {}
-            d["input"] = sentence_to_text_field(sent, indexers)
-            d["targs"] = sentence_to_text_field(sent, self.target_indexer)
+            d["input"] = sentence_to_text_field(sent[:-1], indexers)
+            d["targs"] = sentence_to_text_field(sent[1:], self.target_indexer)
             d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-1], self.target_indexer)
             return Instance(d)
         for sent in split:
