@@ -541,7 +541,7 @@ class WSJLanguageModelling(LanguageModelingTask):
             d = {}
             d["input"] = sentence_to_text_field(sent[:-1], indexers)
             d["targs"] = sentence_to_text_field(sent[1:], self.target_indexer)
-            d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-1], self.target_indexer)
+            d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-2], self.target_indexer)
             return Instance(d)
         for sent in split:
             yield _make_instance(sent)
