@@ -232,7 +232,8 @@ class ONLSTMStack(nn.Module):
             distances_in.append(dist_layer_cin)
         output = prev_layer
         output=self.lockdrop(output, self.dropout)
-        return output, torch.ones(output.shape)
+        mask=abs_inp!=0
+        return output, mask
         #import pdb;pdb.set_trace()
         #return output, prev_state, raw_outputs, outputs, (torch.stack(distances_forget), torch.stack(distances_in))
 
