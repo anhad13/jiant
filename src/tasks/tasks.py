@@ -528,24 +528,24 @@ class WSJLanguageModelling(LanguageModelingTask):
     #     self.example_counts = example_counts
 
     
-    # def process_split(self, split, indexers) -> Iterable[Type[Instance]]:
-    #     """Process a language modeling split by indexing and creating fields.
-    #     Args:
-    #         split: (list) a single list of sentences
-    #         indexers: (Indexer object) indexer to index input words
-    #     """
-    #     def _make_instance(sent):
-    #         ''' Forward targs adds <s> as a target for input </s>
-    #         and bwd targs adds </s> as a target for input <s>
-    #         to avoid issues with needing to strip extra tokens
-    #         in the input for each direction '''
-    #         d = {}
-    #         d["input"] = sentence_to_text_field(sent[:-1], indexers)
-    #         d["targs"] = sentence_to_text_field(sent[1:], self.target_indexer)
-    #         d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-2], self.target_indexer)
-    #         return Instance(d)
-    #     for sent in split:
-    #         yield _make_instance(sent)
+    def process_split(self, split, indexers) -> Iterable[Type[Instance]]:
+        """Process a language modeling split by indexing and creating fields.
+        Args:
+            split: (list) a single list of sentences
+            indexers: (Indexer object) indexer to index input words
+        """
+        def _make_instance(sent):
+            ''' Forward targs adds <s> as a target for input </s>
+            and bwd targs adds </s> as a target for input <s>
+            to avoid issues with needing to strip extra tokens
+            in the input for each direction '''
+            d = {}
+            d["input"] = sentence_to_text_field(sent[:-1], indexers)
+            d["targs"] = sentence_to_text_field(sent[1:], self.target_indexer)
+            d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-2], self.target_indexer)
+            return Instance(d)
+        for sent in split:
+            yield _make_instance(sent)
     # def load_data(self, path):
     #     """Loading data file and tokenizing the text
     #     Args:
