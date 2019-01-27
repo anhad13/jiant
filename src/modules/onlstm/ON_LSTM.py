@@ -27,10 +27,10 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
   if scale:
     masked_embed_weight = scale.expand_as(masked_embed_weight) * masked_embed_weight
  # import pdb;pdb.set_trace()
-  # padding_idx = embed.padding_idx
-  # if padding_idx is None:
-  #   padding_idx = -1
-  padding_idx=-1
+  padding_idx = embed.padding_idx
+  if padding_idx is None:
+    padding_idx = -1
+  #padding_idx=-1
   X = torch.nn.functional.embedding(words, masked_embed_weight,
     padding_idx, embed.max_norm, embed.norm_type,
     embed.scale_grad_by_freq, embed.sparse
@@ -194,7 +194,7 @@ class ONLSTMStack(nn.Module):
     def forward_actual(self, input, hidden):
         abs_inp=input
         #import pdb;pdb.set_trace()
-        input=embedded_dropout(self.embedder.token_embedder_words, input, dropout=self.dropoutw if self.training else 0)
+        input=embedded_dropout(self.emb, input, dropout=self.dropoutw if self.training else 0)
         input = self.lockdrop(input, self.dropouti)
         length, batch_size, _ = input.size()
         if self.training:
