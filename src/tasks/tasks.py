@@ -541,7 +541,7 @@ class WSJLanguageModelling(LanguageModelingTask):
             to avoid issues with needing to strip extra tokens
             in the input for each direction '''
             d = {}
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
             d["input"] = sentence_to_text_field(sent[:-1], indexers)
             d["targs"] = sentence_to_text_field(sent[1:], self.target_indexer)
             d["targs_b"] = sentence_to_text_field([sent[-1]] + sent[:-2], self.target_indexer)
@@ -553,16 +553,19 @@ class WSJLanguageModelling(LanguageModelingTask):
         Args:
             path: (str) data file path
         """
-        nonatomics_toks=['@@UNKNOWN@@', '<unk>']
+        nseq_len=self.max_seq_len
         with open(path) as txt_fh:
             for row in txt_fh:
                 toks = row.strip()
                 if not toks:
                     continue
                 toks_v=toks.split()
-                toks=["<SOS>"]+toks_v[:self.max_seq_len-2]+["<EOS>"]
+                toks=toks.split()+["<EOS>"]
+                tokens+=toks
+            for i in range(0, len(tokens), seq_len):
+                yield tokens[i:i+seq_len]
                 #toks=_atomic_tokenize(toks, UNK_TOK_ATOMIC, nonatomics_toks, self.max_seq_len)
-                yield toks
+                #yield toks
 
 @register_task('reddit', rel_path='Reddit_2008/')
 @register_task('reddit_dummy', rel_path='Reddit_2008_TestSample/')
