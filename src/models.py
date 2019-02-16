@@ -197,7 +197,7 @@ def build_model(args, vocab, pretrained_embs, tasks):
     tying=False
     if tasks[0].name=="wsj" and args.sent_enc=='onlstm' and tying:#enable tying
         model.sent_encoder._phrase_layer.emb.weight=model.wsj_hid2voc.weight
-    model = model.cuda() if args.cuda >= 0 else model
+    #model = model.cuda() if args.cuda >= 0 else model
     log.info(model)
     param_count = 0
     trainable_param_count = 0
@@ -983,6 +983,7 @@ class MultiTaskModel(nn.Module):
         targs = trg_fwd
         assert logits.size(0) == targs.size(0), "Number of logits and targets differ!"
         out['loss'] = F.cross_entropy(logits, targs, ignore_index=pad_idx)
+        print("\nPerplexity:"+str(math.exp(out['loss'])))
         task.scorer1(out['loss'].item())
         if predict:
             pass
